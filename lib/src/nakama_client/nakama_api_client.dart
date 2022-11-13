@@ -548,7 +548,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
   Future<FriendList> listFriends({
     required model.Session session,
     int? state,
-    int? limit,
+    int? limit = 20,
     String? cursor,
   }) async {
     _session = session;
