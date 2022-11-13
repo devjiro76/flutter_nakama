@@ -414,6 +414,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
     return res;
   }
 
+  @override
   Future<void> deleteStorageObject({
     required model.Session session,
     required Iterable<DeleteStorageObjectId> objectIds,
@@ -488,6 +489,36 @@ class NakamaGrpcClient extends NakamaBaseClient {
           subscore: subscore == null ? null : Int64(subscore),
           metadata: metadata,
         ),
+      ),
+      options: _getSessionCallOptions(session),
+    );
+  }
+
+  @override
+  Future<void> linkDevice({
+    required model.Session session,
+    String? id,
+    Map<String, String>? vars,
+  }) async {
+    await _client.linkDevice(
+      AccountDevice(
+        id: id,
+        vars: vars,
+      ),
+      options: _getSessionCallOptions(session),
+    );
+  }
+
+  @override
+  Future<void> unlinkDevice({
+    required model.Session session,
+    String? id,
+    Map<String, String>? vars,
+  }) async {
+    await _client.unlinkDevice(
+      AccountDevice(
+        id: id,
+        vars: vars,
       ),
       options: _getSessionCallOptions(session),
     );
