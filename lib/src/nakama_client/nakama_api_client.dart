@@ -543,4 +543,22 @@ class NakamaRestApiClient extends NakamaBaseClient {
       ),
     );
   }
+
+  @override
+  Future<FriendList> listFriends({
+    required model.Session session,
+    int? state,
+    int? limit,
+    String? cursor,
+  }) async {
+    _session = session;
+
+    final res = await _api.v2FriendGet(
+      state: state,
+      limit: limit,
+      cursor: cursor,
+    );
+
+    return FriendList()..mergeFromProto3Json(res.body!.toJson());
+  }
 }

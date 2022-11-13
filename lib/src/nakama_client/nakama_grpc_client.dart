@@ -523,4 +523,23 @@ class NakamaGrpcClient extends NakamaBaseClient {
       options: _getSessionCallOptions(session),
     );
   }
+
+  @override
+  Future<FriendList> listFriends({
+    required model.Session session,
+    int? state,
+    int? limit,
+    String? cursor,
+  }) async {
+    final res = await _client.listFriends(
+      ListFriendsRequest(
+        limit: Int32Value(value: limit),
+        state: Int32Value(value: state),
+        cursor: cursor,
+      ),
+      options: _getSessionCallOptions(session),
+    );
+
+    return res;
+  }
 }
