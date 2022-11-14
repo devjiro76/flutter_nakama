@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:nakama/api.dart';
 import 'package:nakama/nakama.dart';
 import 'package:nakama/src/session.dart' as model;
