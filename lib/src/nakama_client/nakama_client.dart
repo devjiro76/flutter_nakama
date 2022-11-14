@@ -170,4 +170,51 @@ abstract class NakamaBaseClient {
     int? limit,
     String? cursor,
   });
+
+  Future<void> addFriends({
+    required model.Session session,
+    List<String>? ids,
+    List<String>? usernames,
+  });
+
+  Future<void> deleteFriends({
+    required model.Session session,
+    List<String>? ids,
+    List<String>? usernames,
+  });
+
+  Future<void> blockFriends({
+    required model.Session session,
+    required List<String> ids,
+    required List<String> usernames,
+  });
+
+  Future<GroupList> listGroups({
+    required model.Session session,
+    String? name,
+    String? cursor,
+    int? limit,
+    String? langTag,
+    int? members,
+    bool? open,
+  });
+
+  // create Group
+  Future<Group> createGroup({
+    required model.Session session,
+    required String name,
+    String? description,
+    String? langTag,
+    String? avatarUrl,
+    bool? open,
+    int? maxCount,
+  });
+
+  Future<GroupUserList> listGroupUsers({
+    required model.Session session,
+    required String groupId,
+    int? state,
+    int? limit,
+    String? cursor,
+  });
 }

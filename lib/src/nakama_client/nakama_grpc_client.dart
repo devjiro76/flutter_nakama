@@ -542,4 +542,135 @@ class NakamaGrpcClient extends NakamaBaseClient {
 
     return res;
   }
+
+  @override
+  Future<void> addFriends({
+    required model.Session session,
+    List<String>? ids,
+    List<String>? usernames,
+  }) async {
+    await _client.addFriends(
+      AddFriendsRequest(
+        ids: ids,
+        usernames: usernames,
+      ),
+      options: _getSessionCallOptions(session),
+    );
+  }
+
+  @override
+  Future<void> deleteFriends({
+    required model.Session session,
+    List<String>? ids,
+    List<String>? usernames,
+  }) async {
+    await _client.deleteFriends(
+      DeleteFriendsRequest(
+        ids: ids,
+      ),
+      options: _getSessionCallOptions(session),
+    );
+  }
+
+  @override
+  Future<void> blockFriends({
+    required model.Session session,
+    required List<String>? ids,
+    required List<String>? usernames,
+  }) async {
+    await _client.blockFriends(
+      BlockFriendsRequest(
+        ids: ids,
+      ),
+      options: _getSessionCallOptions(session),
+    );
+  }
+
+  @override
+  Future<GroupList> listGroups({
+    required model.Session session,
+    String? name,
+    String? cursor,
+    int? limit = 20,
+    String? langTag,
+    int? members,
+    bool? open,
+  }) async {
+    final paramMap = {};
+
+    if (name != null) {
+      paramMap['name'] = name;
+    }
+    if (cursor != null) {
+      paramMap['cursor'] = cursor;
+    }
+    if (limit != null) {
+      paramMap['limit'] = Int32Value(value: limit);
+    }
+    if (langTag != null) {
+      paramMap['langTag'] = langTag;
+    }
+    if (members != null) {
+      paramMap['members'] = Int32Value(value: members);
+    }
+    if (open != null) {
+      paramMap['open'] = BoolValue(value: open);
+    }
+
+    final param = paramMap.map((key, value) => MapEntry(Symbol(key), value));
+    final request = Function.apply(ListGroupsRequest.new, [], param);
+
+    final res = await _client.listGroups(
+      request,
+      options: _getSessionCallOptions(session),
+    );
+
+    return res;
+  }
+
+  @override
+  Future<Group> createGroup({
+    required model.Session session,
+    required String name,
+    String? description,
+    String? avatarUrl,
+    String? langTag,
+    bool? open,
+    int? maxCount,
+  }) async {
+    final res = await _client.createGroup(
+      CreateGroupRequest(
+        name: name,
+        description: description,
+        avatarUrl: avatarUrl,
+        langTag: langTag,
+        open: open,
+        maxCount: maxCount,
+      ),
+      options: _getSessionCallOptions(session),
+    );
+
+    return res;
+  }
+
+  @override
+  Future<GroupUserList> listGroupUsers({
+    required model.Session session,
+    required String groupId,
+    int? state,
+    int? limit = 20,
+    String? cursor,
+  }) async {
+    final res = await _client.listGroupUsers(
+      ListGroupUsersRequest(
+        groupId: groupId,
+        limit: Int32Value(value: limit),
+        state: Int32Value(value: state),
+        cursor: cursor,
+      ),
+      options: _getSessionCallOptions(session),
+    );
+
+    return res;
+  }
 }

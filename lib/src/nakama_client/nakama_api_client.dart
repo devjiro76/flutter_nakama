@@ -561,4 +561,131 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
     return FriendList()..mergeFromProto3Json(res.body!.toJson());
   }
+
+  @override
+  Future<void> addFriends({
+    required model.Session session,
+    List<String>? ids,
+    List<String>? usernames,
+  }) async {
+    _session = session;
+
+    await _api.v2FriendPost(
+      ids: ids,
+      usernames: usernames,
+    );
+  }
+
+  @override
+  Future<void> deleteFriends({
+    required model.Session session,
+    List<String>? ids,
+    List<String>? usernames,
+  }) async {
+    _session = session;
+
+    await _api.v2FriendDelete(
+      ids: ids,
+      usernames: usernames,
+    );
+  }
+
+  @override
+  Future<void> blockFriends({
+    required model.Session session,
+    List<String>? ids,
+    List<String>? usernames,
+  }) async {
+    _session = session;
+
+    await _api.v2FriendBlockPost(
+      ids: ids,
+      usernames: usernames,
+    );
+  }
+
+  @override
+  Future<GroupList> listGroups({
+    required model.Session session,
+    String? name,
+    String? cursor,
+    int? limit = 20,
+    String? langTag,
+    int? members,
+    bool? open,
+  }) async {
+    _session = session;
+
+    final param = <Symbol, dynamic>{};
+    if (name != null) {
+      param.addEntries([MapEntry(const Symbol('name'), name)]);
+    }
+    if (cursor != null) {
+      param.addEntries([MapEntry(const Symbol('cursor'), cursor)]);
+    }
+    if (limit != null) {
+      param.addEntries([MapEntry(const Symbol('limit'), limit)]);
+    }
+    if (langTag != null) {
+      param.addEntries([MapEntry(const Symbol('langTag'), langTag)]);
+    }
+    if (members != null) {
+      param.addEntries([MapEntry(const Symbol('members'), members)]);
+    }
+    if (open != null) {
+      param.addEntries([MapEntry(const Symbol('open'), open)]);
+    }
+
+    final res = await Function.apply(
+      _api.v2GroupGet,
+      [],
+      param,
+    );
+
+    return GroupList()..mergeFromProto3Json(res.body!.toJson());
+  }
+
+  @override
+  Future<Group> createGroup({
+    required model.Session session,
+    required String name,
+    String? description,
+    String? avatarUrl,
+    String? langTag,
+    bool? open,
+    int? maxCount,
+  }) async {
+    _session = session;
+
+    final res = await _api.v2GroupPost(
+      body: ApiCreateGroupRequest(
+        name: name,
+        description: description,
+        avatarUrl: avatarUrl,
+        langTag: langTag,
+        open: open,
+        maxCount: maxCount,
+      ),
+    );
+
+    return Group()..mergeFromProto3Json(res.body!.toJson());
+  }
+
+  @override
+  Future<GroupUserList> listGroupUsers({
+    required model.Session session,
+    required String groupId,
+    int? state,
+    int? limit = 20,
+    String? cursor,
+  }) async {
+    final res = await _api.v2GroupGroupIdUserGet(
+      groupId: groupId,
+      state: state,
+      limit: limit,
+      cursor: cursor,
+    );
+
+    return GroupUserList()..mergeFromProto3Json(res.body!.toJson());
+  }
 }
