@@ -831,22 +831,19 @@ abstract class Apigrpc extends ChopperService {
 
   ///Update fields in a given group.
   ///@param groupId The ID of the group to update.
-  ///@param body
+  ///@param body Update fields in a given group.
   Future<chopper.Response> v2GroupGroupIdPut(
-      {required String? groupId, required ApiUpdateGroupRequest? body}) {
-    generatedMapping.putIfAbsent(
-        ApiUpdateGroupRequest, () => ApiUpdateGroupRequest.fromJsonFactory);
-
+      {required String? groupId, required Object? body}) {
     return _v2GroupGroupIdPut(groupId: groupId, body: body);
   }
 
   ///Update fields in a given group.
   ///@param groupId The ID of the group to update.
-  ///@param body
+  ///@param body Update fields in a given group.
   @Put(path: '/v2/group/{groupId}')
   Future<chopper.Response> _v2GroupGroupIdPut(
       {@Path('groupId') required String? groupId,
-      @Body() required ApiUpdateGroupRequest? body});
+      @Body() required Object? body});
 
   ///Add users to a group.
   ///@param groupId The group to add users to.
@@ -1195,12 +1192,14 @@ abstract class Apigrpc extends ChopperService {
   ///@param ownerId The owner to retrieve records around.
   ///@param limit Max number of records to return. Between 1 and 100.
   ///@param expiry Expiry in seconds (since epoch) to begin fetching records from.
+  ///@param cursor A next or previous page cursor.
   Future<chopper.Response<ApiLeaderboardRecordList>>
       v2LeaderboardLeaderboardIdOwnerOwnerIdGet(
           {required String? leaderboardId,
           required String? ownerId,
           int? limit,
-          String? expiry}) {
+          String? expiry,
+          String? cursor}) {
     generatedMapping.putIfAbsent(ApiLeaderboardRecordList,
         () => ApiLeaderboardRecordList.fromJsonFactory);
 
@@ -1208,7 +1207,8 @@ abstract class Apigrpc extends ChopperService {
         leaderboardId: leaderboardId,
         ownerId: ownerId,
         limit: limit,
-        expiry: expiry);
+        expiry: expiry,
+        cursor: cursor);
   }
 
   ///List leaderboard records that belong to a user.
@@ -1216,13 +1216,15 @@ abstract class Apigrpc extends ChopperService {
   ///@param ownerId The owner to retrieve records around.
   ///@param limit Max number of records to return. Between 1 and 100.
   ///@param expiry Expiry in seconds (since epoch) to begin fetching records from.
+  ///@param cursor A next or previous page cursor.
   @Get(path: '/v2/leaderboard/{leaderboardId}/owner/{ownerId}')
   Future<chopper.Response<ApiLeaderboardRecordList>>
       _v2LeaderboardLeaderboardIdOwnerOwnerIdGet(
           {@Path('leaderboardId') required String? leaderboardId,
           @Path('ownerId') required String? ownerId,
           @Query('limit') int? limit,
-          @Query('expiry') String? expiry});
+          @Query('expiry') String? expiry,
+          @Query('cursor') String? cursor});
 
   ///Fetch list of running matches.
   ///@param limit Limit the number of returned matches.
@@ -1367,54 +1369,54 @@ abstract class Apigrpc extends ChopperService {
 
   ///Get storage objects.
   ///@param body
-  Future<chopper.Response<ApiStorageObjects>> v2StoragePost(
+  Future<chopper.Response<ApiStorageObjects>> v2StorageGet(
       {required ApiReadStorageObjectsRequest? body}) {
     generatedMapping.putIfAbsent(ApiReadStorageObjectsRequest,
         () => ApiReadStorageObjectsRequest.fromJsonFactory);
     generatedMapping.putIfAbsent(
         ApiStorageObjects, () => ApiStorageObjects.fromJsonFactory);
 
-    return _v2StoragePost(body: body);
+    return _v2StorageGet(body: body);
   }
 
   ///Get storage objects.
   ///@param body
-  @Post(path: '/v2/storage')
-  Future<chopper.Response<ApiStorageObjects>> _v2StoragePost(
+  @Get(path: '/v2/storage')
+  Future<chopper.Response<ApiStorageObjects>> _v2StorageGet(
       {@Body() required ApiReadStorageObjectsRequest? body});
 
   ///Write objects into the storage engine.
   ///@param body
-  Future<chopper.Response<ApiStorageObjectAcks>> v2StoragePut(
+  Future<chopper.Response<ApiStorageObjectAcks>> v2StoragePost(
       {required ApiWriteStorageObjectsRequest? body}) {
     generatedMapping.putIfAbsent(ApiWriteStorageObjectsRequest,
         () => ApiWriteStorageObjectsRequest.fromJsonFactory);
     generatedMapping.putIfAbsent(
         ApiStorageObjectAcks, () => ApiStorageObjectAcks.fromJsonFactory);
 
-    return _v2StoragePut(body: body);
+    return _v2StoragePost(body: body);
   }
 
   ///Write objects into the storage engine.
   ///@param body
-  @Put(path: '/v2/storage')
-  Future<chopper.Response<ApiStorageObjectAcks>> _v2StoragePut(
+  @Post(path: '/v2/storage')
+  Future<chopper.Response<ApiStorageObjectAcks>> _v2StoragePost(
       {@Body() required ApiWriteStorageObjectsRequest? body});
 
   ///Delete one or more objects by ID or username.
   ///@param body
-  Future<chopper.Response> v2StorageDeletePut(
+  Future<chopper.Response> v2StorageDelete(
       {required ApiDeleteStorageObjectsRequest? body}) {
     generatedMapping.putIfAbsent(ApiDeleteStorageObjectsRequest,
         () => ApiDeleteStorageObjectsRequest.fromJsonFactory);
 
-    return _v2StorageDeletePut(body: body);
+    return _v2StorageDelete(body: body);
   }
 
   ///Delete one or more objects by ID or username.
   ///@param body
-  @Put(path: '/v2/storage/delete')
-  Future<chopper.Response> _v2StorageDeletePut(
+  @Delete(path: '/v2/storage')
+  Future<chopper.Response> _v2StorageDelete(
       {@Body() required ApiDeleteStorageObjectsRequest? body});
 
   ///List publicly readable storage objects in a given collection.
@@ -1626,12 +1628,14 @@ abstract class Apigrpc extends ChopperService {
   ///@param ownerId The owner to retrieve records around.
   ///@param limit Max number of records to return. Between 1 and 100.
   ///@param expiry Expiry in seconds (since epoch) to begin fetching records from.
+  ///@param cursor A next or previous page cursor.
   Future<chopper.Response<ApiTournamentRecordList>>
       v2TournamentTournamentIdOwnerOwnerIdGet(
           {required String? tournamentId,
           required String? ownerId,
           int? limit,
-          String? expiry}) {
+          String? expiry,
+          String? cursor}) {
     generatedMapping.putIfAbsent(
         ApiTournamentRecordList, () => ApiTournamentRecordList.fromJsonFactory);
 
@@ -1639,7 +1643,8 @@ abstract class Apigrpc extends ChopperService {
         tournamentId: tournamentId,
         ownerId: ownerId,
         limit: limit,
-        expiry: expiry);
+        expiry: expiry,
+        cursor: cursor);
   }
 
   ///List tournament records for a given owner.
@@ -1647,13 +1652,15 @@ abstract class Apigrpc extends ChopperService {
   ///@param ownerId The owner to retrieve records around.
   ///@param limit Max number of records to return. Between 1 and 100.
   ///@param expiry Expiry in seconds (since epoch) to begin fetching records from.
+  ///@param cursor A next or previous page cursor.
   @Get(path: '/v2/tournament/{tournamentId}/owner/{ownerId}')
   Future<chopper.Response<ApiTournamentRecordList>>
       _v2TournamentTournamentIdOwnerOwnerIdGet(
           {@Path('tournamentId') required String? tournamentId,
           @Path('ownerId') required String? ownerId,
           @Query('limit') int? limit,
-          @Query('expiry') String? expiry});
+          @Query('expiry') String? expiry,
+          @Query('cursor') String? cursor});
 
   ///Fetch zero or more users by ID and/or username.
   ///@param ids The account id of a user.
@@ -5651,109 +5658,6 @@ extension $ApiUpdateAccountRequestWrappedExtension on ApiUpdateAccountRequest {
 }
 
 @JsonSerializable(explicitToJson: true)
-class ApiUpdateGroupRequest {
-  ApiUpdateGroupRequest({
-    this.groupId,
-    this.name,
-    this.description,
-    this.langTag,
-    this.avatarUrl,
-    this.open,
-  });
-
-  factory ApiUpdateGroupRequest.fromJson(Map<String, dynamic> json) =>
-      _$ApiUpdateGroupRequestFromJson(json);
-
-  @JsonKey(name: 'groupId', includeIfNull: true)
-  final String? groupId;
-  @JsonKey(name: 'name', includeIfNull: true)
-  final String? name;
-  @JsonKey(name: 'description', includeIfNull: true)
-  final String? description;
-  @JsonKey(name: 'langTag', includeIfNull: true)
-  final String? langTag;
-  @JsonKey(name: 'avatarUrl', includeIfNull: true)
-  final String? avatarUrl;
-  @JsonKey(name: 'open', includeIfNull: true)
-  final bool? open;
-  static const fromJsonFactory = _$ApiUpdateGroupRequestFromJson;
-  static const toJsonFactory = _$ApiUpdateGroupRequestToJson;
-  Map<String, dynamic> toJson() => _$ApiUpdateGroupRequestToJson(this);
-
-  @override
-  String toString() => jsonEncode(this);
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other is ApiUpdateGroupRequest &&
-            (identical(other.groupId, groupId) ||
-                const DeepCollectionEquality()
-                    .equals(other.groupId, groupId)) &&
-            (identical(other.name, name) ||
-                const DeepCollectionEquality().equals(other.name, name)) &&
-            (identical(other.description, description) ||
-                const DeepCollectionEquality()
-                    .equals(other.description, description)) &&
-            (identical(other.langTag, langTag) ||
-                const DeepCollectionEquality()
-                    .equals(other.langTag, langTag)) &&
-            (identical(other.avatarUrl, avatarUrl) ||
-                const DeepCollectionEquality()
-                    .equals(other.avatarUrl, avatarUrl)) &&
-            (identical(other.open, open) ||
-                const DeepCollectionEquality().equals(other.open, open)));
-  }
-
-  @override
-  int get hashCode =>
-      const DeepCollectionEquality().hash(groupId) ^
-      const DeepCollectionEquality().hash(name) ^
-      const DeepCollectionEquality().hash(description) ^
-      const DeepCollectionEquality().hash(langTag) ^
-      const DeepCollectionEquality().hash(avatarUrl) ^
-      const DeepCollectionEquality().hash(open) ^
-      runtimeType.hashCode;
-}
-
-extension $ApiUpdateGroupRequestExtension on ApiUpdateGroupRequest {
-  ApiUpdateGroupRequest copyWith(
-      {String? groupId,
-      String? name,
-      String? description,
-      String? langTag,
-      String? avatarUrl,
-      bool? open}) {
-    return ApiUpdateGroupRequest(
-        groupId: groupId ?? this.groupId,
-        name: name ?? this.name,
-        description: description ?? this.description,
-        langTag: langTag ?? this.langTag,
-        avatarUrl: avatarUrl ?? this.avatarUrl,
-        open: open ?? this.open);
-  }
-}
-
-extension $ApiUpdateGroupRequestWrappedExtension on ApiUpdateGroupRequest {
-  ApiUpdateGroupRequest copyWith(
-      {Wrapped<String?>? groupId,
-      Wrapped<String?>? name,
-      Wrapped<String?>? description,
-      Wrapped<String?>? langTag,
-      Wrapped<String?>? avatarUrl,
-      Wrapped<bool?>? open}) {
-    return ApiUpdateGroupRequest(
-        groupId: (groupId != null ? groupId.value : this.groupId),
-        name: (name != null ? name.value : this.name),
-        description:
-            (description != null ? description.value : this.description),
-        langTag: (langTag != null ? langTag.value : this.langTag),
-        avatarUrl: (avatarUrl != null ? avatarUrl.value : this.avatarUrl),
-        open: (open != null ? open.value : this.open));
-  }
-}
-
-@JsonSerializable(explicitToJson: true)
 class ApiUser {
   ApiUser({
     this.id,
@@ -6972,17 +6876,14 @@ extension $ApiWriteStorageObjectsRequestWrappedExtension
 @JsonSerializable(explicitToJson: true)
 class ProtobufAny {
   ProtobufAny({
-    this.typeUrl,
-    this.value,
+    this.type,
   });
 
   factory ProtobufAny.fromJson(Map<String, dynamic> json) =>
       _$ProtobufAnyFromJson(json);
 
-  @JsonKey(name: 'typeUrl', includeIfNull: true)
-  final String? typeUrl;
-  @JsonKey(name: 'value', includeIfNull: true)
-  final String? value;
+  @JsonKey(name: '@type', includeIfNull: true)
+  final String? type;
   static const fromJsonFactory = _$ProtobufAnyFromJson;
   static const toJsonFactory = _$ProtobufAnyToJson;
   Map<String, dynamic> toJson() => _$ProtobufAnyToJson(this);
@@ -6994,32 +6895,24 @@ class ProtobufAny {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is ProtobufAny &&
-            (identical(other.typeUrl, typeUrl) ||
-                const DeepCollectionEquality()
-                    .equals(other.typeUrl, typeUrl)) &&
-            (identical(other.value, value) ||
-                const DeepCollectionEquality().equals(other.value, value)));
+            (identical(other.type, type) ||
+                const DeepCollectionEquality().equals(other.type, type)));
   }
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash(typeUrl) ^
-      const DeepCollectionEquality().hash(value) ^
-      runtimeType.hashCode;
+      const DeepCollectionEquality().hash(type) ^ runtimeType.hashCode;
 }
 
 extension $ProtobufAnyExtension on ProtobufAny {
-  ProtobufAny copyWith({String? typeUrl, String? value}) {
-    return ProtobufAny(
-        typeUrl: typeUrl ?? this.typeUrl, value: value ?? this.value);
+  ProtobufAny copyWith({String? type}) {
+    return ProtobufAny(type: type ?? this.type);
   }
 }
 
 extension $ProtobufAnyWrappedExtension on ProtobufAny {
-  ProtobufAny copyWith({Wrapped<String?>? typeUrl, Wrapped<String?>? value}) {
-    return ProtobufAny(
-        typeUrl: (typeUrl != null ? typeUrl.value : this.typeUrl),
-        value: (value != null ? value.value : this.value));
+  ProtobufAny copyWith({Wrapped<String?>? type}) {
+    return ProtobufAny(type: (type != null ? type.value : this.type));
   }
 }
 

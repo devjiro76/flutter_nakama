@@ -363,7 +363,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }) {
     _session = session;
 
-    return _api.v2StoragePut(
+    return _api.v2StoragePost(
       body: ApiWriteStorageObjectsRequest(
         objects: [
           ApiWriteStorageObject(
@@ -388,7 +388,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }) async {
     _session = session;
 
-    final res = await _api.v2StoragePost(
+    final res = await _api.v2StorageGet(
       body: ApiReadStorageObjectsRequest(
         objectIds: [
           ApiReadStorageObjectId(
@@ -431,7 +431,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }) async {
     _session = session;
 
-    await _api.v2StorageDeletePut(
+    await _api.v2StorageDelete(
       body: ApiDeleteStorageObjectsRequest(
         objectIds: objectIds
             .map((e) => ApiDeleteStorageObjectId(

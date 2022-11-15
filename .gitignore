@@ -80,7 +80,7 @@ build/
 .env*
 
 # Project specific
-tools/nakama_server/.cookie
-tools/nakama_server/modules
-.proto-build
+tool/nakama_server/.cookie
+tool/nakama_server/modules
+tool/.proto-build/
 tool/nakama_server/.cookie

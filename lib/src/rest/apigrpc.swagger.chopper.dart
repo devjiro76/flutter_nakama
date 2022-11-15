@@ -450,7 +450,7 @@ class _$Apigrpc extends Apigrpc {
 
   @override
   Future<Response<dynamic>> _v2GroupGroupIdPut(
-      {required String? groupId, required ApiUpdateGroupRequest? body}) {
+      {required String? groupId, required Object? body}) {
     final $url = '/v2/group/${groupId}';
     final $body = body;
     final $request = Request('PUT', $url, client.baseUrl, body: $body);
@@ -643,9 +643,14 @@ class _$Apigrpc extends Apigrpc {
           {required String? leaderboardId,
           required String? ownerId,
           int? limit,
-          String? expiry}) {
+          String? expiry,
+          String? cursor}) {
     final $url = '/v2/leaderboard/${leaderboardId}/owner/${ownerId}';
-    final $params = <String, dynamic>{'limit': limit, 'expiry': expiry};
+    final $params = <String, dynamic>{
+      'limit': limit,
+      'expiry': expiry,
+      'cursor': cursor
+    };
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
     return client
         .send<ApiLeaderboardRecordList, ApiLeaderboardRecordList>($request);
@@ -738,29 +743,29 @@ class _$Apigrpc extends Apigrpc {
   }
 
   @override
-  Future<Response<ApiStorageObjects>> _v2StoragePost(
+  Future<Response<ApiStorageObjects>> _v2StorageGet(
       {required ApiReadStorageObjectsRequest? body}) {
     final $url = '/v2/storage';
     final $body = body;
-    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    final $request = Request('GET', $url, client.baseUrl, body: $body);
     return client.send<ApiStorageObjects, ApiStorageObjects>($request);
   }
 
   @override
-  Future<Response<ApiStorageObjectAcks>> _v2StoragePut(
+  Future<Response<ApiStorageObjectAcks>> _v2StoragePost(
       {required ApiWriteStorageObjectsRequest? body}) {
     final $url = '/v2/storage';
     final $body = body;
-    final $request = Request('PUT', $url, client.baseUrl, body: $body);
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<ApiStorageObjectAcks, ApiStorageObjectAcks>($request);
   }
 
   @override
-  Future<Response<dynamic>> _v2StorageDeletePut(
+  Future<Response<dynamic>> _v2StorageDelete(
       {required ApiDeleteStorageObjectsRequest? body}) {
-    final $url = '/v2/storage/delete';
+    final $url = '/v2/storage';
     final $body = body;
-    final $request = Request('PUT', $url, client.baseUrl, body: $body);
+    final $request = Request('DELETE', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -866,9 +871,14 @@ class _$Apigrpc extends Apigrpc {
           {required String? tournamentId,
           required String? ownerId,
           int? limit,
-          String? expiry}) {
+          String? expiry,
+          String? cursor}) {
     final $url = '/v2/tournament/${tournamentId}/owner/${ownerId}';
-    final $params = <String, dynamic>{'limit': limit, 'expiry': expiry};
+    final $params = <String, dynamic>{
+      'limit': limit,
+      'expiry': expiry,
+      'cursor': cursor
+    };
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
     return client
         .send<ApiTournamentRecordList, ApiTournamentRecordList>($request);

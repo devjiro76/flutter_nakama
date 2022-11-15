@@ -934,28 +934,6 @@ Map<String, dynamic> _$ApiUpdateAccountRequestToJson(
       'timezone': instance.timezone,
     };
 
-ApiUpdateGroupRequest _$ApiUpdateGroupRequestFromJson(
-        Map<String, dynamic> json) =>
-    ApiUpdateGroupRequest(
-      groupId: json['groupId'] as String?,
-      name: json['name'] as String?,
-      description: json['description'] as String?,
-      langTag: json['langTag'] as String?,
-      avatarUrl: json['avatarUrl'] as String?,
-      open: json['open'] as bool?,
-    );
-
-Map<String, dynamic> _$ApiUpdateGroupRequestToJson(
-        ApiUpdateGroupRequest instance) =>
-    <String, dynamic>{
-      'groupId': instance.groupId,
-      'name': instance.name,
-      'description': instance.description,
-      'langTag': instance.langTag,
-      'avatarUrl': instance.avatarUrl,
-      'open': instance.open,
-    };
-
 ApiUser _$ApiUserFromJson(Map<String, dynamic> json) => ApiUser(
       id: json['id'] as String?,
       username: json['username'] as String?,
@@ -1242,14 +1220,12 @@ Map<String, dynamic> _$ApiWriteStorageObjectsRequestToJson(
     };
 
 ProtobufAny _$ProtobufAnyFromJson(Map<String, dynamic> json) => ProtobufAny(
-      typeUrl: json['typeUrl'] as String?,
-      value: json['value'] as String?,
+      type: json['@type'] as String?,
     );
 
 Map<String, dynamic> _$ProtobufAnyToJson(ProtobufAny instance) =>
     <String, dynamic>{
-      'typeUrl': instance.typeUrl,
-      'value': instance.value,
+      '@type': instance.type,
     };
 
 RpcStatus _$RpcStatusFromJson(Map<String, dynamic> json) => RpcStatus(
