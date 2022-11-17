@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:chopper/chopper.dart';
 import 'package:nakama/api.dart';
 import 'package:nakama/nakama.dart';
@@ -580,14 +578,14 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }
 
   @override
-  Future<Response> addFriends({
+  Future<void> addFriends({
     required model.Session session,
     List<String>? ids,
     List<String>? usernames,
   }) async {
     _session = session;
 
-    return await _api.v2FriendPost(
+    _api.v2FriendPost(
       ids: ids,
       usernames: usernames,
     );
@@ -686,6 +684,20 @@ class NakamaRestApiClient extends NakamaBaseClient {
     );
 
     return Group()..mergeFromProto3Json(res.body!.toJson());
+  }
+
+  @override
+  Future<Empty> joinGroup({
+    required model.Session session,
+    required String groupId,
+  }) async {
+    _session = session;
+
+    final res = await _api.v2GroupGroupIdJoinPost(
+      groupId: groupId,
+    );
+
+    return Empty()..mergeFromProto3Json(res.body!.toJson());
   }
 
   @override

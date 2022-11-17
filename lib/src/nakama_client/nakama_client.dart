@@ -196,15 +196,19 @@ abstract class NakamaBaseClient {
     bool? open,
   });
 
-  // create Group
   Future<Group> createGroup({
     required model.Session session,
     required String name,
     String? description,
     String? langTag,
     String? avatarUrl,
-    bool? open,
+    bool? open = true,
     int? maxCount,
+  });
+
+  Future<void> joinGroup({
+    required model.Session session,
+    required String groupId,
   });
 
   Future<GroupUserList> listGroupUsers({

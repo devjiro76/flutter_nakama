@@ -125,7 +125,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
   @override
   Future<model.Session> authenticateDevice({
     required String deviceId,
-    bool create = true,
+    bool? create,
     String? username,
     Map<String, String>? vars,
   }) async {
@@ -299,8 +299,8 @@ class NakamaGrpcClient extends NakamaBaseClient {
   }
 
   @override
-  Future<Empty> sessionLogout(model.Session session) async {
-    return await _client.sessionLogout(
+  Future<void> sessionLogout(model.Session session) async {
+    _client.sessionLogout(
       SessionLogoutRequest(
           token: session.token, refreshToken: session.refreshToken),
       options: _getSessionCallOptions(session),
@@ -399,19 +399,16 @@ class NakamaGrpcClient extends NakamaBaseClient {
     String? userId,
     int? limit = 20,
   }) async {
-    final _limit = Int32Value(value: limit);
     final request = ListStorageObjectsRequest(
       collection: collection,
       cursor: cursor,
-      limit: _limit,
+      limit: limit == null ? null : Int32Value(value: limit),
       userId: userId,
     );
-    final res = await _client.listStorageObjects(
+    return _client.listStorageObjects(
       request,
       options: _getSessionCallOptions(session),
     );
-
-    return res;
   }
 
   @override
@@ -596,36 +593,17 @@ class NakamaGrpcClient extends NakamaBaseClient {
     int? members,
     bool? open,
   }) async {
-    final paramMap = {};
-
-    if (name != null) {
-      paramMap['name'] = name;
-    }
-    if (cursor != null) {
-      paramMap['cursor'] = cursor;
-    }
-    if (limit != null) {
-      paramMap['limit'] = Int32Value(value: limit);
-    }
-    if (langTag != null) {
-      paramMap['langTag'] = langTag;
-    }
-    if (members != null) {
-      paramMap['members'] = Int32Value(value: members);
-    }
-    if (open != null) {
-      paramMap['open'] = BoolValue(value: open);
-    }
-
-    final param = paramMap.map((key, value) => MapEntry(Symbol(key), value));
-    final request = Function.apply(ListGroupsRequest.new, [], param);
-
-    final res = await _client.listGroups(
-      request,
+    return _client.listGroups(
+      ListGroupsRequest(
+        name: name,
+        cursor: cursor,
+        limit: Int32Value(value: limit),
+        langTag: langTag,
+        members: members == null ? null : Int32Value(value: members),
+        open: open == null ? null : BoolValue(value: open),
+      ),
       options: _getSessionCallOptions(session),
     );
-
-    return res;
   }
 
   @override
@@ -638,7 +616,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
     bool? open,
     int? maxCount,
   }) async {
-    final res = await _client.createGroup(
+    return _client.createGroup(
       CreateGroupRequest(
         name: name,
         description: description,
@@ -649,8 +627,19 @@ class NakamaGrpcClient extends NakamaBaseClient {
       ),
       options: _getSessionCallOptions(session),
     );
+  }
 
-    return res;
+  @override
+  Future<void> joinGroup({
+    required model.Session session,
+    required String groupId,
+  }) async {
+    _client.joinGroup(
+      JoinGroupRequest(
+        groupId: groupId,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -661,16 +650,14 @@ class NakamaGrpcClient extends NakamaBaseClient {
     int? limit = 20,
     String? cursor,
   }) async {
-    final res = await _client.listGroupUsers(
+    return _client.listGroupUsers(
       ListGroupUsersRequest(
         groupId: groupId,
-        limit: Int32Value(value: limit),
-        state: Int32Value(value: state),
+        state: state == null ? null : Int32Value(value: state),
+        limit: limit == null ? null : Int32Value(value: limit),
         cursor: cursor,
       ),
       options: _getSessionCallOptions(session),
     );
-
-    return res;
   }
 }
