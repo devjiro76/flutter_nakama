@@ -78,6 +78,9 @@ abstract class NakamaBaseClient {
 
   Future<Account> getAccount(model.Session session);
 
+  // sessionout
+  Future<void> sessionLogout(model.Session session);
+
   Future<void> updateAccount({
     required model.Session session,
     String? username,
@@ -95,14 +98,10 @@ abstract class NakamaBaseClient {
     List<String>? usernames,
   });
 
-  Future<void> writeStorageObject({
+  Future<StorageObjectAcks> writeStorageObjects({
     required model.Session session,
-    String? collection,
-    String? key,
-    String? value,
-    String? version,
-    StorageWritePermission? writePermission,
-    StorageReadPermission? readPermission,
+    List<WriteStorageObject>? objects,
+    WriteStorageObject? object,
   });
 
   Future<StorageObjectList> listStorageObjects({
@@ -118,7 +117,7 @@ abstract class NakamaBaseClient {
     required Iterable<DeleteStorageObjectId> objectIds,
   });
 
-  Future<StorageObject?> readStorageObject({
+  Future<StorageObject?> readStorageObjects({
     required model.Session session,
     String? collection,
     String? key,

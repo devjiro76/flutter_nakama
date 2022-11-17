@@ -12,48 +12,59 @@ void main() {
 
     setUpAll(() async {
       client = NakamaRestApiClient.init(
-        host: kTestHost,
+        host: host,
         ssl: false,
-        serverKey: kTestServerKey,
+        serverKey: serverKey,
       );
 
-      session = await client.authenticateDevice(deviceId: faker.guid.guid());
+      session =
+          await client.authenticateDevice(deviceId: testDeviceId, create: true);
     });
 
     test('write storage object', () async {
-      await client.writeStorageObject(
+      await client.writeStorageObjects(
         session: session,
-        collection: 'stats',
-        key: 'skills',
-        value: '{"skill":25}',
+        object: api.WriteStorageObject(
+          collection: 'test',
+          key: 'test',
+          value: 'test',
+          version: '1',
+        ),
       );
     });
 
     test('write storage object with permissions', () async {
-      await client.writeStorageObject(
+      await client.writeStorageObjects(
         session: session,
-        collection: 'stats',
-        key: 'scores',
-        value: '{"skill":25}',
-        writePermission: StorageWritePermission.ownerWrite,
-        readPermission: StorageReadPermission.publicRead,
+        object: api.WriteStorageObject(
+          collection: 'stats',
+          key: 'scores',
+          value: '{"skill":25}',
+          permissionRead:
+              api.Int32Value(value: StorageWritePermission.ownerWrite.index),
+          permissionWrite:
+              api.Int32Value(value: StorageReadPermission.publicRead.index),
+        ),
       );
     });
 
     test('read storage object', () async {
-      await client.writeStorageObject(
+      await client.writeStorageObjects(
         session: session,
-        collection: 'stats',
-        key: 'skills',
-        value: '{"skill": 100}',
-        writePermission: StorageWritePermission.ownerWrite,
-        readPermission: StorageReadPermission.publicRead,
+        object: api.WriteStorageObject(
+          collection: 'stats',
+          key: 'skills',
+          value: '{"skill": 100}',
+          permissionRead:
+              api.Int32Value(value: StorageWritePermission.ownerWrite.index),
+          permissionWrite:
+              api.Int32Value(value: StorageReadPermission.publicRead.index),
+        ),
       );
 
-      final res = await client.readStorageObject(
+      final res = await client.readStorageObjects(
         session: session,
         collection: 'stats',
-        key: 'skills',
         userId: session.userId,
       );
 
@@ -64,22 +75,28 @@ void main() {
     test('list storage objects', () async {
       // Write two objects
       await Future.wait([
-        client.writeStorageObject(
-          session: session,
-          collection: 'stats',
-          key: 'skills',
-          value: '{"skill": 100}',
-          writePermission: StorageWritePermission.ownerWrite,
-          readPermission: StorageReadPermission.publicRead,
-        ),
-        client.writeStorageObject(
-          session: session,
-          collection: 'stats',
-          key: 'achievements',
-          value: '{"hero": 20}',
-          writePermission: StorageWritePermission.ownerWrite,
-          readPermission: StorageReadPermission.publicRead,
-        ),
+        client.writeStorageObjects(
+            session: session,
+            object: api.WriteStorageObject(
+              collection: 'stats',
+              key: 'skills',
+              value: '{"skill": 100}',
+              permissionRead: api.Int32Value(
+                  value: StorageWritePermission.ownerWrite.index),
+              permissionWrite:
+                  api.Int32Value(value: StorageReadPermission.publicRead.index),
+            )),
+        client.writeStorageObjects(
+            session: session,
+            object: api.WriteStorageObject(
+              collection: 'stats',
+              key: 'achievements',
+              value: '{"hero": 20}',
+              permissionRead: api.Int32Value(
+                  value: StorageWritePermission.ownerWrite.index),
+              permissionWrite:
+                  api.Int32Value(value: StorageReadPermission.publicRead.index),
+            )),
       ]);
 
       final res = await client.listStorageObjects(
@@ -94,17 +111,21 @@ void main() {
     });
 
     test('delete storage object', () async {
-      await client.writeStorageObject(
+      await client.writeStorageObjects(
         session: session,
-        collection: 'stats',
-        key: 'skills',
-        value: '{"skill": 100}',
-        writePermission: StorageWritePermission.ownerWrite,
-        readPermission: StorageReadPermission.publicRead,
+        object: api.WriteStorageObject(
+          collection: 'stats',
+          key: 'skills',
+          value: '{"skill": 100}',
+          permissionRead:
+              api.Int32Value(value: StorageWritePermission.ownerWrite.index),
+          permissionWrite:
+              api.Int32Value(value: StorageReadPermission.publicRead.index),
+        ),
       );
 
       // Be sure we get a result
-      final res = await client.readStorageObject(
+      final res = await client.readStorageObjects(
         session: session,
         collection: 'stats',
         key: 'skills',
@@ -122,7 +143,7 @@ void main() {
         ),
       ]);
 
-      final afterRes = await client.readStorageObject(
+      final afterRes = await client.readStorageObjects(
         session: session,
         collection: 'stats',
         key: 'skills',

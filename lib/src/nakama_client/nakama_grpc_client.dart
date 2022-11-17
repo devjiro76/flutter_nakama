@@ -299,6 +299,15 @@ class NakamaGrpcClient extends NakamaBaseClient {
   }
 
   @override
+  Future<Empty> sessionLogout(model.Session session) async {
+    return await _client.sessionLogout(
+      SessionLogoutRequest(
+          token: session.token, refreshToken: session.refreshToken),
+      options: _getSessionCallOptions(session),
+    );
+  }
+
+  @override
   Future<void> updateAccount({
     required model.Session session,
     String? username,
@@ -340,38 +349,27 @@ class NakamaGrpcClient extends NakamaBaseClient {
   }
 
   @override
-  Future<void> writeStorageObject({
+  Future<StorageObjectAcks> writeStorageObjects({
     required model.Session session,
-    String? collection,
-    String? key,
-    String? value,
-    String? version,
-    StorageWritePermission? writePermission,
-    StorageReadPermission? readPermission,
+    List<WriteStorageObject>? objects,
+    WriteStorageObject? object,
   }) {
+    if (objects == null && object == null) {
+      throw Exception('No objects provided.');
+    }
+
+    objects ??= [object!];
+
     return _client.writeStorageObjects(
       WriteStorageObjectsRequest(
-        objects: [
-          WriteStorageObject(
-            collection: collection,
-            key: key,
-            value: value,
-            version: version,
-            permissionWrite: writePermission != null
-                ? Int32Value(value: writePermission.index)
-                : null,
-            permissionRead: readPermission != null
-                ? Int32Value(value: readPermission.index)
-                : null,
-          ),
-        ],
+        objects: objects,
       ),
       options: _getSessionCallOptions(session),
     );
   }
 
   @override
-  Future<StorageObject?> readStorageObject({
+  Future<StorageObject?> readStorageObjects({
     required model.Session session,
     String? collection,
     String? key,
@@ -399,15 +397,17 @@ class NakamaGrpcClient extends NakamaBaseClient {
     String? collection,
     String? cursor,
     String? userId,
-    int? limit,
+    int? limit = 20,
   }) async {
+    final _limit = Int32Value(value: limit);
+    final request = ListStorageObjectsRequest(
+      collection: collection,
+      cursor: cursor,
+      limit: _limit,
+      userId: userId,
+    );
     final res = await _client.listStorageObjects(
-      ListStorageObjectsRequest(
-        collection: collection,
-        cursor: cursor,
-        limit: Int32Value(value: limit),
-        userId: userId,
-      ),
+      request,
       options: _getSessionCallOptions(session),
     );
 

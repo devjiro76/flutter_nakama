@@ -11,9 +11,9 @@ void main() {
 
     setUpAll(() {
       client = NakamaRestApiClient.init(
-        host: kTestHost,
+        host: host,
         ssl: false,
-        serverKey: kTestServerKey,
+        serverKey: serverKey,
       );
     });
 

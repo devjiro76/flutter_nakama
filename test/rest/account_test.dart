@@ -12,9 +12,9 @@ void main() {
 
     setUpAll(() async {
       client = NakamaRestApiClient.init(
-        host: kTestHost,
+        host: host,
         ssl: false,
-        serverKey: kTestServerKey,
+        serverKey: serverKey,
       );
 
       session = await client.authenticateDevice(deviceId: faker.guid.guid());

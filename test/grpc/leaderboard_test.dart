@@ -13,9 +13,9 @@ void main() {
 
     setUpAll(() async {
       client = getNakamaClient(
-        host: kTestHost,
+        host: host,
         ssl: false,
-        serverKey: kTestServerKey,
+        serverKey: serverKey,
       );
 
       session = await client.authenticateDevice(deviceId: faker.guid.guid());

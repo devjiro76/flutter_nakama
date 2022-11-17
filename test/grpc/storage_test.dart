@@ -1,135 +1,58 @@
-import 'package:faker/faker.dart';
+import 'dart:convert';
 import 'package:nakama/api.dart' as api;
 import 'package:nakama/nakama.dart';
+import 'package:nakama/rtapi.dart';
 import 'package:test/test.dart';
 
 import '../config.dart';
 
 void main() {
-  group('[gRPC] Test Storage Engine', () {
+  const testDeviceId = '86321d89-003d-500e-6408-61d97dbed0ce';
+
+  group('[gRPC] Test Storage', () {
     late final NakamaBaseClient client;
     late final Session session;
 
     setUpAll(() async {
       client = getNakamaClient(
-        host: kTestHost,
+        host: host,
         ssl: false,
-        serverKey: kTestServerKey,
+        serverKey: serverKey,
+        httpPort: httpPort,
       );
 
-      session = await client.authenticateDevice(deviceId: faker.guid.guid());
-    });
-
-    test('write storage object', () async {
-      await client.writeStorageObject(
-        session: session,
-        collection: 'stats',
-        key: 'skills',
-        value: '{"skill": 25}',
+      session = await client.authenticateDevice(
+        deviceId: testDeviceId,
+        create: true,
       );
     });
 
-    test('write storage object with permissions', () async {
-      await client.writeStorageObject(
+    test('write storage test', () async {
+      final result = await client.writeStorageObjects(
         session: session,
-        collection: 'stats',
-        key: 'scores',
-        value: '{"skill": 25}',
-        writePermission: StorageWritePermission.ownerWrite,
-        readPermission: StorageReadPermission.publicRead,
-      );
-    });
-
-    test('read storage object', () async {
-      await client.writeStorageObject(
-        session: session,
-        collection: 'stats',
-        key: 'skills',
-        value: '{"skill": 100}',
-        writePermission: StorageWritePermission.ownerWrite,
-        readPermission: StorageReadPermission.publicRead,
-      );
-
-      final res = await client.readStorageObject(
-        session: session,
-        collection: 'stats',
-        key: 'skills',
-        userId: session.userId,
-      );
-
-      expect(res, isA<api.StorageObject>());
-      expect(res!.value, equals('{"skill": 100}'));
-    });
-
-    test('list storage objects', () async {
-      // Write two objects
-      await Future.wait([
-        client.writeStorageObject(
-          session: session,
-          collection: 'stats',
-          key: 'skills',
-          value: '{"skill": 100}',
-          writePermission: StorageWritePermission.ownerWrite,
-          readPermission: StorageReadPermission.publicRead,
+        object: api.WriteStorageObject(
+          collection: 'test',
+          key: 'test',
+          value: jsonEncode({
+            'testKey': ['testValue1', 'testValue2']
+          }),
+          permissionRead: Int32Value(value: 1),
+          permissionWrite: Int32Value(value: 1),
         ),
-        client.writeStorageObject(
-          session: session,
-          collection: 'stats',
-          key: 'achievements',
-          value: '{"hero": 20}',
-          writePermission: StorageWritePermission.ownerWrite,
-          readPermission: StorageReadPermission.publicRead,
-        ),
-      ]);
-
-      final res = await client.listStorageObjects(
-        session: session,
-        collection: 'stats',
-        userId: session.userId,
-        limit: 10,
       );
 
-      expect(res, isA<api.StorageObjectList>());
-      expect(res.objects, hasLength(2));
+      expect(result, isA<api.StorageObjectAcks>());
     });
 
-    test('delete storage object', () async {
-      await client.writeStorageObject(
+    test('get list storage test', () async {
+      final result = await client.readStorageObjects(
         session: session,
-        collection: 'stats',
-        key: 'skills',
-        value: '{"skill": 100}',
-        writePermission: StorageWritePermission.ownerWrite,
-        readPermission: StorageReadPermission.publicRead,
-      );
-
-      // Be sure we get a result
-      final res = await client.readStorageObject(
-        session: session,
-        collection: 'stats',
-        key: 'skills',
         userId: session.userId,
+        collection: 'test',
+        key: 'test',
       );
 
-      expect(res, isA<api.StorageObject>());
-      expect(res!.value, equals('{"skill": 100}'));
-
-      // Delete object
-      await client.deleteStorageObject(session: session, objectIds: [
-        api.DeleteStorageObjectId(
-          collection: 'stats',
-          key: 'skills',
-        ),
-      ]);
-
-      final afterRes = await client.readStorageObject(
-        session: session,
-        collection: 'stats',
-        key: 'skills',
-        userId: session.userId,
-      );
-
-      expect(afterRes, isNull);
+      expect(result, isA<api.StorageObject>());
     });
   });
 }

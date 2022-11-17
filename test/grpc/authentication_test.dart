@@ -11,9 +11,9 @@ void main() {
 
     setUpAll(() {
       client = getNakamaClient(
-        host: kTestHost,
+        host: host,
         ssl: false,
-        serverKey: kTestServerKey,
+        serverKey: serverKey,
       );
     });
 

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:chopper/chopper.dart';
 import 'package:nakama/api.dart';
@@ -313,7 +314,17 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }
 
   @override
-  Future<void> updateAccount({
+  Future<Response> sessionLogout(model.Session session) async {
+    return await _api.v2SessionLogoutPost(
+      body: ApiSessionLogoutRequest(
+        token: session.token,
+        refreshToken: session.refreshToken,
+      ),
+    );
+  }
+
+  @override
+  Future<Response> updateAccount({
     required model.Session session,
     String? username,
     String? displayName,
@@ -324,7 +335,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }) async {
     _session = session;
 
-    await _api.v2AccountPut(
+    return await _api.v2AccountPut(
         body: ApiUpdateAccountRequest(
             username: username,
             displayName: displayName,
@@ -352,35 +363,41 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }
 
   @override
-  Future<void> writeStorageObject({
+  Future<StorageObjectAcks> writeStorageObjects({
     required model.Session session,
-    String? collection,
-    String? key,
-    String? value,
-    String? version,
-    StorageWritePermission? writePermission,
-    StorageReadPermission? readPermission,
-  }) {
+    List<WriteStorageObject>? objects,
+    WriteStorageObject? object,
+  }) async {
     _session = session;
 
-    return _api.v2StoragePost(
+    if (objects == null && object == null) {
+      throw Exception('No objects provided.');
+    }
+
+    objects ??= [object!];
+
+    final result = await _api.v2StoragePost(
       body: ApiWriteStorageObjectsRequest(
-        objects: [
-          ApiWriteStorageObject(
-            collection: collection,
-            key: key,
-            value: value,
-            version: version,
-            permissionWrite: writePermission?.index,
-            permissionRead: readPermission?.index,
-          ),
-        ],
+        objects: objects
+            .map(
+              (el) => ApiWriteStorageObject(
+                collection: el.collection,
+                key: el.key,
+                value: el.value,
+                version: el.version,
+                permissionWrite: el.permissionWrite.value,
+                permissionRead: el.permissionRead.value,
+              ),
+            )
+            .toList(),
       ),
     );
+
+    return StorageObjectAcks()..mergeFromProto3Json(result.body!.toJson());
   }
 
   @override
-  Future<StorageObject?> readStorageObject({
+  Future<StorageObject?> readStorageObjects({
     required model.Session session,
     String? collection,
     String? key,
@@ -425,13 +442,13 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }
 
   @override
-  Future<void> deleteStorageObject({
+  Future<Response> deleteStorageObject({
     required model.Session session,
     required Iterable<DeleteStorageObjectId> objectIds,
   }) async {
     _session = session;
 
-    await _api.v2StorageDelete(
+    return await _api.v2StorageDelete(
       body: ApiDeleteStorageObjectsRequest(
         objectIds: objectIds
             .map((e) => ApiDeleteStorageObjectId(
@@ -513,14 +530,14 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }
 
   @override
-  Future<void> linkDevice({
+  Future<Response> linkDevice({
     required model.Session session,
     String? id,
     Map<String, String>? vars,
   }) async {
     _session = session;
 
-    await _api.v2AccountLinkDevicePost(
+    return await _api.v2AccountLinkDevicePost(
       body: ApiAccountDevice(
         id: id,
         vars: vars,
@@ -529,14 +546,14 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }
 
   @override
-  Future<void> unlinkDevice({
+  Future<Response> unlinkDevice({
     required model.Session session,
     String? id,
     Map<String, String>? vars,
   }) async {
     _session = session;
 
-    await _api.v2AccountUnlinkDevicePost(
+    return await _api.v2AccountUnlinkDevicePost(
       body: ApiAccountDevice(
         id: id,
         vars: vars,
@@ -563,42 +580,42 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }
 
   @override
-  Future<void> addFriends({
+  Future<Response> addFriends({
     required model.Session session,
     List<String>? ids,
     List<String>? usernames,
   }) async {
     _session = session;
 
-    await _api.v2FriendPost(
+    return await _api.v2FriendPost(
       ids: ids,
       usernames: usernames,
     );
   }
 
   @override
-  Future<void> deleteFriends({
+  Future<Response> deleteFriends({
     required model.Session session,
     List<String>? ids,
     List<String>? usernames,
   }) async {
     _session = session;
 
-    await _api.v2FriendDelete(
+    return await _api.v2FriendDelete(
       ids: ids,
       usernames: usernames,
     );
   }
 
   @override
-  Future<void> blockFriends({
+  Future<Response> blockFriends({
     required model.Session session,
     List<String>? ids,
     List<String>? usernames,
   }) async {
     _session = session;
 
-    await _api.v2FriendBlockPost(
+    return await _api.v2FriendBlockPost(
       ids: ids,
       usernames: usernames,
     );

@@ -12,9 +12,9 @@ void main() {
   setUpAll(() async {
     // Create nakama clients.
     final client = getNakamaClient(
-      host: kTestHost,
+      host: host,
       ssl: false,
-      serverKey: kTestServerKey,
+      serverKey: serverKey,
     );
 
     sessionA = await client.authenticateEmail(
@@ -24,7 +24,7 @@ void main() {
 
     // Create main websocket connetion for lcl test.
     NakamaWebsocketClient.init(
-      host: kTestHost,
+      host: host,
       ssl: false,
       token: sessionA.token,
     );
@@ -38,7 +38,7 @@ void main() {
     // Create main websocket connetion for lcl test.
     NakamaWebsocketClient.init(
       key: 'clientb',
-      host: kTestHost,
+      host: host,
       ssl: false,
       token: sessionB.token,
     );
