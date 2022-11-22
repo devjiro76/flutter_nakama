@@ -23,7 +23,7 @@ abstract class NakamaBaseClient {
   Future<model.Session> authenticateEmail({
     required String email,
     required String password,
-    bool create = false,
+    bool? create = false,
     String? username,
     Map<String, String>? vars,
   });
@@ -200,7 +200,7 @@ abstract class NakamaBaseClient {
     required model.Session session,
     required String name,
     String? description,
-    String? langTag,
+    String? langTag = 'kr',
     String? avatarUrl,
     bool? open = true,
     int? maxCount,
@@ -209,6 +209,14 @@ abstract class NakamaBaseClient {
   Future<void> joinGroup({
     required model.Session session,
     required String groupId,
+  });
+
+  Future<UserGroupList> listUserGroups({
+    required model.Session session,
+    String? userId,
+    int? limit = 20,
+    int? state,
+    String? cursor,
   });
 
   Future<GroupUserList> listGroupUsers({

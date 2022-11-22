@@ -89,7 +89,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
   Future<model.Session> authenticateEmail({
     required String email,
     required String password,
-    bool create = true,
+    bool? create,
     String? username,
     Map<String, String>? vars,
   }) async {
@@ -698,6 +698,26 @@ class NakamaRestApiClient extends NakamaBaseClient {
     );
 
     return Empty()..mergeFromProto3Json(res.body!.toJson());
+  }
+
+  @override
+  Future<UserGroupList> listUserGroups({
+    required model.Session session,
+    String? userId,
+    int? state,
+    int? limit,
+    String? cursor,
+  }) async {
+    _session = session;
+
+    final res = await _api.v2UserUserIdGroupGet(
+      userId: userId,
+      limit: limit,
+      state: state,
+      cursor: cursor,
+    );
+
+    return UserGroupList()..mergeFromProto3Json(res.body!.toJson());
   }
 
   @override

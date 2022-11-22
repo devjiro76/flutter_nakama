@@ -98,7 +98,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
   Future<model.Session> authenticateEmail({
     required String email,
     required String password,
-    bool create = true,
+    bool? create,
     String? username,
     Map<String, String>? vars,
   }) async {
@@ -637,6 +637,25 @@ class NakamaGrpcClient extends NakamaBaseClient {
     _client.joinGroup(
       JoinGroupRequest(
         groupId: groupId,
+      ),
+      options: _getSessionCallOptions(session),
+    );
+  }
+
+  @override
+  Future<UserGroupList> listUserGroups({
+    required model.Session session,
+    String? userId,
+    int? limit,
+    int? state,
+    String? cursor,
+  }) async {
+    return _client.listUserGroups(
+      ListUserGroupsRequest(
+        userId: userId,
+        limit: limit == null ? null : Int32Value(value: limit),
+        state: state == null ? null : Int32Value(value: state),
+        cursor: cursor,
       ),
       options: _getSessionCallOptions(session),
     );
