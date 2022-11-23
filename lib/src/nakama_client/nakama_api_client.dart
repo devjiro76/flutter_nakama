@@ -560,6 +560,37 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }
 
   @override
+  Future<void> linkCustom({
+    required model.Session session,
+    required String id,
+    Map<String, String>? vars,
+  }) async {
+    _session = session;
+
+    await _api.v2AccountLinkCustomPost(
+      body: ApiAccountCustom(
+        id: id,
+        vars: vars,
+      ),
+    );
+  }
+
+  @override
+  Future<void> unlinkCustom({
+    required model.Session session,
+    String? id,
+    Map<String, String>? vars,
+  }) async {
+    _session = session;
+
+    await _api.v2AccountUnlinkCustomPost(
+      body: ApiAccountCustom(
+        id: id,
+      ),
+    );
+  }
+
+  @override
   Future<FriendList> listFriends({
     required model.Session session,
     int? state,
@@ -736,5 +767,19 @@ class NakamaRestApiClient extends NakamaBaseClient {
     );
 
     return GroupUserList()..mergeFromProto3Json(res.body!.toJson());
+  }
+
+  @override
+  Future<void> rpc({
+    required model.Session session,
+    required String id,
+    String? payload,
+  }) async {
+    _session = session;
+
+    await _api.v2RpcIdGet(
+      id: id,
+      payload: payload,
+    );
   }
 }

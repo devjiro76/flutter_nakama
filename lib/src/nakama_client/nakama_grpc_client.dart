@@ -522,6 +522,36 @@ class NakamaGrpcClient extends NakamaBaseClient {
   }
 
   @override
+  Future<void> linkCustom({
+    required model.Session session,
+    required String id,
+    Map<String, String>? vars,
+  }) async {
+    await _client.linkCustom(
+      AccountCustom(
+        id: id,
+        vars: vars,
+      ),
+      options: _getSessionCallOptions(session),
+    );
+  }
+
+  @override
+  Future<void> unlinkCustom({
+    required model.Session session,
+    String? id,
+    Map<String, String>? vars,
+  }) async {
+    await _client.unlinkCustom(
+      AccountCustom(
+        id: id,
+        vars: vars,
+      ),
+      options: _getSessionCallOptions(session),
+    );
+  }
+
+  @override
   Future<FriendList> listFriends({
     required model.Session session,
     int? state,
@@ -675,6 +705,21 @@ class NakamaGrpcClient extends NakamaBaseClient {
         state: state == null ? null : Int32Value(value: state),
         limit: limit == null ? null : Int32Value(value: limit),
         cursor: cursor,
+      ),
+      options: _getSessionCallOptions(session),
+    );
+  }
+
+  @override
+  Future<void> rpc({
+    required model.Session session,
+    required String id,
+    String? payload,
+  }) async {
+    await _client.rpcFunc(
+      Rpc(
+        id: id,
+        payload: payload,
       ),
       options: _getSessionCallOptions(session),
     );

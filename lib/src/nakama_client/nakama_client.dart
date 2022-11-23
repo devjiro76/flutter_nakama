@@ -161,6 +161,18 @@ abstract class NakamaBaseClient {
     Map<String, String>? vars,
   });
 
+  Future<void> linkCustom({
+    required model.Session session,
+    required String id,
+    Map<String, String>? vars,
+  });
+
+  Future<void> unlinkCustom({
+    required model.Session session,
+    String? id,
+    Map<String, String>? vars,
+  });
+
   Future<FriendList> listFriends({
     required model.Session session,
     int? state,
@@ -225,5 +237,11 @@ abstract class NakamaBaseClient {
     int? state,
     int? limit,
     String? cursor,
+  });
+
+  Future<void> rpc({
+    required model.Session session,
+    required String id,
+    String? payload,
   });
 }
