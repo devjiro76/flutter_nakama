@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:nakama/nakama.dart';
@@ -41,7 +42,8 @@ class _MatchAreaState extends State<MatchArea> {
     // Send dummy match data via Websocket
     NakamaWebsocketClient.instance.sendMatchData(
       matchId: widget.match.matchId,
-      opCode: Int64(0),
+      // opCode: Int64(0),
+      opCode: 0,
       data: data.codeUnits,
     );
     print('Match Data changed: $data');

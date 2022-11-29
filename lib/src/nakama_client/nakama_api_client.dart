@@ -782,4 +782,31 @@ class NakamaRestApiClient extends NakamaBaseClient {
       payload: payload,
     );
   }
+
+  @override
+  Future<model.Session> sessionRefresh({
+    required model.Session session,
+    Map<String, String>? vars,
+  }) async {
+    _session = session;
+
+    final res = await _api.v2AccountSessionRefreshPost(
+      body: ApiSessionRefreshRequest(
+        token: session.refreshToken,
+        vars: vars,
+      ),
+    );
+
+    if (res.body == null) {
+      throw Exception('Authentication failed.');
+    }
+
+    final data = res.body!;
+
+    return model.Session(
+      created: data.created ?? false,
+      token: data.token!,
+      refreshToken: data.refreshToken,
+    );
+  }
 }

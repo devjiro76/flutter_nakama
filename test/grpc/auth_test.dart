@@ -48,7 +48,6 @@ void main() {
     test('test session refresh', () async {
       final session = await client.authenticateDevice(
         deviceId: faker.guid.guid(),
-        create: true,
       );
 
       final newSession = await client.sessionRefresh(session: session);

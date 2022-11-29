@@ -244,4 +244,9 @@ abstract class NakamaBaseClient {
     required String id,
     String? payload,
   });
+
+  Future<model.Session> sessionRefresh({
+    required model.Session session,
+    Map<String, String>? vars,
+  });
 }

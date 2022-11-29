@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:grpc/grpc.dart';
 import 'package:grpc/grpc_connection_interface.dart';
 import 'package:logging/logging.dart';
@@ -722,6 +721,25 @@ class NakamaGrpcClient extends NakamaBaseClient {
         payload: payload,
       ),
       options: _getSessionCallOptions(session),
+    );
+  }
+
+  @override
+  Future<model.Session> sessionRefresh({
+    required model.Session session,
+    Map<String, String>? vars,
+  }) async {
+    final res = await _client.sessionRefresh(
+      SessionRefreshRequest(
+        token: session.refreshToken,
+        vars: vars,
+      ),
+    );
+
+    return model.Session(
+      created: res.created,
+      token: res.token,
+      refreshToken: res.refreshToken,
     );
   }
 }
