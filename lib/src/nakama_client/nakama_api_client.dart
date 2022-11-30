@@ -1352,4 +1352,18 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
     return model.LeaderboardRecord.fromJson(res.body!.toJson());
   }
+
+  @override
+  Future<void> rpc({
+    required model.Session session,
+    required String id,
+    String? payload,
+  }) async {
+    _session = session;
+
+    await _api.v2RpcIdGet(
+      id: id,
+      payload: payload,
+    );
+  }
 }

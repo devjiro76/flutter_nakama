@@ -221,7 +221,10 @@ class NakamaGrpcClient extends NakamaBaseClient {
       ..id = deviceId
       ..vars.addAll(vars ?? {});
 
-    await _client.linkDevice(request);
+    await _client.linkDevice(
+      request,
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -759,7 +762,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
     String? collection,
     String? cursor,
     String? userId,
-    int? limit,
+    int? limit = defaultLimit,
   }) async {
     final res = await _client.listStorageObjects(
       api.ListStorageObjectsRequest(
@@ -896,9 +899,12 @@ class NakamaGrpcClient extends NakamaBaseClient {
     required model.Session session,
     required String leaderboardId,
   }) async {
-    await _client.deleteLeaderboardRecord(api.DeleteLeaderboardRecordRequest(
-      leaderboardId: leaderboardId,
-    ));
+    await _client.deleteLeaderboardRecord(
+      api.DeleteLeaderboardRecordRequest(
+        leaderboardId: leaderboardId,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -907,10 +913,13 @@ class NakamaGrpcClient extends NakamaBaseClient {
     List<String>? usernames,
     List<String>? ids,
   }) async {
-    await _client.addFriends(api.AddFriendsRequest(
-      usernames: usernames,
-      ids: ids,
-    ));
+    await _client.addFriends(
+      api.AddFriendsRequest(
+        usernames: usernames,
+        ids: ids,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -920,11 +929,14 @@ class NakamaGrpcClient extends NakamaBaseClient {
     int limit = defaultLimit,
     String? cursor,
   }) async {
-    final res = await _client.listFriends(api.ListFriendsRequest(
-      cursor: cursor,
-      limit: api.Int32Value(value: limit),
-      state: api.Int32Value(value: friendshipState?.index),
-    ));
+    final res = await _client.listFriends(
+      api.ListFriendsRequest(
+        cursor: cursor,
+        limit: api.Int32Value(value: limit),
+        state: api.Int32Value(value: friendshipState?.index),
+      ),
+      options: _getSessionCallOptions(session),
+    );
 
     return model.FriendsList.fromDto(res);
   }
@@ -935,10 +947,13 @@ class NakamaGrpcClient extends NakamaBaseClient {
     List<String>? usernames,
     List<String>? ids,
   }) async {
-    await _client.deleteFriends(api.DeleteFriendsRequest(
-      ids: ids,
-      usernames: usernames,
-    ));
+    await _client.deleteFriends(
+      api.DeleteFriendsRequest(
+        ids: ids,
+        usernames: usernames,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -947,10 +962,13 @@ class NakamaGrpcClient extends NakamaBaseClient {
     List<String>? usernames,
     List<String>? ids,
   }) async {
-    await _client.blockFriends(api.BlockFriendsRequest(
-      ids: ids,
-      usernames: usernames,
-    ));
+    await _client.blockFriends(
+      api.BlockFriendsRequest(
+        ids: ids,
+        usernames: usernames,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -963,14 +981,17 @@ class NakamaGrpcClient extends NakamaBaseClient {
     int? maxCount,
     bool? open,
   }) async {
-    final res = await _client.createGroup(api.CreateGroupRequest(
-      name: name,
-      avatarUrl: avatarUrl,
-      description: description,
-      langTag: langTag,
-      maxCount: maxCount,
-      open: open,
-    ));
+    final res = await _client.createGroup(
+      api.CreateGroupRequest(
+        name: name,
+        avatarUrl: avatarUrl,
+        description: description,
+        langTag: langTag,
+        maxCount: maxCount,
+        open: open,
+      ),
+      options: _getSessionCallOptions(session),
+    );
 
     return model.Group.fromDto(res);
   }
@@ -980,14 +1001,17 @@ class NakamaGrpcClient extends NakamaBaseClient {
     required model.Session session,
     required model.Group group,
   }) async {
-    await _client.updateGroup(api.UpdateGroupRequest(
-      groupId: group.id,
-      avatarUrl: api.StringValue(value: group.avatarUrl),
-      description: api.StringValue(value: group.description),
-      langTag: api.StringValue(value: group.langTag),
-      name: api.StringValue(value: group.name),
-      open: api.BoolValue(value: group.open),
-    ));
+    await _client.updateGroup(
+      api.UpdateGroupRequest(
+        groupId: group.id,
+        avatarUrl: api.StringValue(value: group.avatarUrl),
+        description: api.StringValue(value: group.description),
+        langTag: api.StringValue(value: group.langTag),
+        name: api.StringValue(value: group.name),
+        open: api.BoolValue(value: group.open),
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -1000,14 +1024,17 @@ class NakamaGrpcClient extends NakamaBaseClient {
     bool? open,
     int limit = defaultLimit,
   }) async {
-    final res = await _client.listGroups(api.ListGroupsRequest(
-      name: name,
-      cursor: cursor,
-      langTag: langTag,
-      limit: api.Int32Value(value: limit),
-      members: api.Int32Value(value: members),
-      open: api.BoolValue(value: open),
-    ));
+    final res = await _client.listGroups(
+      api.ListGroupsRequest(
+        name: name,
+        cursor: cursor,
+        langTag: langTag,
+        limit: api.Int32Value(value: limit),
+        members: members == null ? null : api.Int32Value(value: members),
+        open: open == null ? null : api.BoolValue(value: open),
+      ),
+      options: _getSessionCallOptions(session),
+    );
 
     return model.GroupList.fromDto(res);
   }
@@ -1017,7 +1044,10 @@ class NakamaGrpcClient extends NakamaBaseClient {
     required model.Session session,
     required String groupId,
   }) async {
-    await _client.deleteGroup(api.DeleteGroupRequest(groupId: groupId));
+    await _client.deleteGroup(
+      api.DeleteGroupRequest(groupId: groupId),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -1025,7 +1055,10 @@ class NakamaGrpcClient extends NakamaBaseClient {
     required model.Session session,
     required String groupId,
   }) async {
-    await _client.joinGroup(api.JoinGroupRequest(groupId: groupId));
+    await _client.joinGroup(
+      api.JoinGroupRequest(groupId: groupId),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -1036,12 +1069,15 @@ class NakamaGrpcClient extends NakamaBaseClient {
     GroupMembershipState? state,
     String? userId,
   }) async {
-    final res = await _client.listUserGroups(api.ListUserGroupsRequest(
-      cursor: cursor,
-      limit: api.Int32Value(value: limit),
-      state: api.Int32Value(value: state?.index),
-      userId: userId,
-    ));
+    final res = await _client.listUserGroups(
+      api.ListUserGroupsRequest(
+        cursor: cursor,
+        limit: api.Int32Value(value: limit),
+        state: api.Int32Value(value: state?.index),
+        userId: userId,
+      ),
+      options: _getSessionCallOptions(session),
+    );
 
     return model.UserGroupList.fromDto(res);
   }
@@ -1054,12 +1090,15 @@ class NakamaGrpcClient extends NakamaBaseClient {
     int limit = defaultLimit,
     GroupMembershipState? state,
   }) async {
-    final res = await _client.listGroupUsers(api.ListGroupUsersRequest(
-      groupId: groupId,
-      cursor: cursor,
-      limit: api.Int32Value(value: limit),
-      state: api.Int32Value(value: state?.index),
-    ));
+    final res = await _client.listGroupUsers(
+      api.ListGroupUsersRequest(
+        groupId: groupId,
+        cursor: cursor,
+        limit: api.Int32Value(value: limit),
+        state: api.Int32Value(value: state?.index),
+      ),
+      options: _getSessionCallOptions(session),
+    );
 
     return model.GroupUserList.fromDto(res);
   }
@@ -1070,10 +1109,13 @@ class NakamaGrpcClient extends NakamaBaseClient {
     required String groupId,
     required Iterable<String> userIds,
   }) async {
-    await _client.addGroupUsers(api.AddGroupUsersRequest(
-      groupId: groupId,
-      userIds: userIds,
-    ));
+    await _client.addGroupUsers(
+      api.AddGroupUsersRequest(
+        groupId: groupId,
+        userIds: userIds,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -1082,10 +1124,13 @@ class NakamaGrpcClient extends NakamaBaseClient {
     required String groupId,
     required Iterable<String> userIds,
   }) async {
-    await _client.promoteGroupUsers(api.PromoteGroupUsersRequest(
-      groupId: groupId,
-      userIds: userIds,
-    ));
+    await _client.promoteGroupUsers(
+      api.PromoteGroupUsersRequest(
+        groupId: groupId,
+        userIds: userIds,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -1094,10 +1139,13 @@ class NakamaGrpcClient extends NakamaBaseClient {
     required String groupId,
     required Iterable<String> userIds,
   }) async {
-    await _client.demoteGroupUsers(api.DemoteGroupUsersRequest(
-      groupId: groupId,
-      userIds: userIds,
-    ));
+    await _client.demoteGroupUsers(
+      api.DemoteGroupUsersRequest(
+        groupId: groupId,
+        userIds: userIds,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -1106,10 +1154,13 @@ class NakamaGrpcClient extends NakamaBaseClient {
     required String groupId,
     required Iterable<String> userIds,
   }) async {
-    await _client.kickGroupUsers(api.KickGroupUsersRequest(
-      groupId: groupId,
-      userIds: userIds,
-    ));
+    await _client.kickGroupUsers(
+      api.KickGroupUsersRequest(
+        groupId: groupId,
+        userIds: userIds,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -1118,10 +1169,13 @@ class NakamaGrpcClient extends NakamaBaseClient {
     required String groupId,
     required Iterable<String> userIds,
   }) async {
-    await _client.banGroupUsers(api.BanGroupUsersRequest(
-      groupId: groupId,
-      userIds: userIds,
-    ));
+    await _client.banGroupUsers(
+      api.BanGroupUsersRequest(
+        groupId: groupId,
+        userIds: userIds,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -1129,9 +1183,12 @@ class NakamaGrpcClient extends NakamaBaseClient {
     required model.Session session,
     required String groupId,
   }) async {
-    await _client.leaveGroup(api.LeaveGroupRequest(
-      groupId: groupId,
-    ));
+    await _client.leaveGroup(
+      api.LeaveGroupRequest(
+        groupId: groupId,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -1140,10 +1197,13 @@ class NakamaGrpcClient extends NakamaBaseClient {
     int limit = defaultLimit,
     String? cursor,
   }) async {
-    final res = await _client.listNotifications(api.ListNotificationsRequest(
-      cacheableCursor: cursor,
-      limit: api.Int32Value(value: limit),
-    ));
+    final res = await _client.listNotifications(
+      api.ListNotificationsRequest(
+        cacheableCursor: cursor,
+        limit: api.Int32Value(value: limit),
+      ),
+      options: _getSessionCallOptions(session),
+    );
 
     return model.NotificationList.fromDto(res);
   }
@@ -1153,9 +1213,12 @@ class NakamaGrpcClient extends NakamaBaseClient {
     required model.Session session,
     required Iterable<String> notificationIds,
   }) async {
-    await _client.deleteNotifications(api.DeleteNotificationsRequest(
-      ids: notificationIds,
-    ));
+    await _client.deleteNotifications(
+      api.DeleteNotificationsRequest(
+        ids: notificationIds,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -1168,14 +1231,17 @@ class NakamaGrpcClient extends NakamaBaseClient {
     int? minSize,
     String? query,
   }) async {
-    final res = await _client.listMatches(api.ListMatchesRequest(
-      authoritative: api.BoolValue(value: authoritative),
-      label: api.StringValue(value: label),
-      limit: api.Int32Value(value: limit),
-      maxSize: api.Int32Value(value: maxSize),
-      minSize: api.Int32Value(value: minSize),
-      query: api.StringValue(value: query),
-    ));
+    final res = await _client.listMatches(
+      api.ListMatchesRequest(
+        authoritative: api.BoolValue(value: authoritative),
+        label: api.StringValue(value: label),
+        limit: api.Int32Value(value: limit),
+        maxSize: api.Int32Value(value: maxSize),
+        minSize: api.Int32Value(value: minSize),
+        query: api.StringValue(value: query),
+      ),
+      options: _getSessionCallOptions(session),
+    );
 
     return res.matches
         .map((e) => model.Match.fromDto(e))
@@ -1187,9 +1253,12 @@ class NakamaGrpcClient extends NakamaBaseClient {
     required model.Session session,
     required String tournamentId,
   }) async {
-    await _client.joinTournament(api.JoinTournamentRequest(
-      tournamentId: tournamentId,
-    ));
+    await _client.joinTournament(
+      api.JoinTournamentRequest(
+        tournamentId: tournamentId,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 
   @override
@@ -1202,19 +1271,23 @@ class NakamaGrpcClient extends NakamaBaseClient {
     DateTime? endTime,
     int limit = defaultLimit,
   }) async {
-    final res = await _client.listTournaments(api.ListTournamentsRequest(
-      categoryEnd: api.UInt32Value(value: categoryEnd),
-      categoryStart: api.UInt32Value(value: categoryStart),
-      cursor: cursor,
-      startTime: api.UInt32Value(
-          value: startTime != null
-              ? startTime.millisecondsSinceEpoch ~/ 1000
-              : null),
-      endTime: api.UInt32Value(
-          value:
-              endTime != null ? endTime.millisecondsSinceEpoch ~/ 1000 : null),
-      limit: api.Int32Value(value: limit),
-    ));
+    final res = await _client.listTournaments(
+      api.ListTournamentsRequest(
+        categoryEnd: api.UInt32Value(value: categoryEnd),
+        categoryStart: api.UInt32Value(value: categoryStart),
+        cursor: cursor,
+        startTime: api.UInt32Value(
+            value: startTime != null
+                ? startTime.millisecondsSinceEpoch ~/ 1000
+                : null),
+        endTime: api.UInt32Value(
+            value: endTime != null
+                ? endTime.millisecondsSinceEpoch ~/ 1000
+                : null),
+        limit: api.Int32Value(value: limit),
+      ),
+      options: _getSessionCallOptions(session),
+    );
 
     return model.TournamentList.fromDto(res);
   }
@@ -1228,14 +1301,16 @@ class NakamaGrpcClient extends NakamaBaseClient {
     int limit = defaultLimit,
     String? cursor,
   }) async {
-    final res =
-        await _client.listTournamentRecords(api.ListTournamentRecordsRequest(
-      cursor: cursor,
-      expiry: expiry == null ? null : api.Int64Value(value: Int64(expiry)),
-      limit: api.Int32Value(value: limit),
-      ownerIds: ownerIds,
-      tournamentId: tournamentId,
-    ));
+    final res = await _client.listTournamentRecords(
+      api.ListTournamentRecordsRequest(
+        cursor: cursor,
+        expiry: expiry == null ? null : api.Int64Value(value: Int64(expiry)),
+        limit: api.Int32Value(value: limit),
+        ownerIds: ownerIds,
+        tournamentId: tournamentId,
+      ),
+      options: _getSessionCallOptions(session),
+    );
 
     return model.TournamentRecordList.fromDto(res);
   }
@@ -1249,32 +1324,49 @@ class NakamaGrpcClient extends NakamaBaseClient {
     int? score,
     int? subscore,
   }) async {
-    final res =
-        await _client.writeTournamentRecord(api.WriteTournamentRecordRequest(
-      tournamentId: tournamentId,
-      record: api.WriteTournamentRecordRequest_TournamentRecordWrite(
-        metadata: metadata,
-        operator: () {
-          switch (operator) {
-            case LeaderboardOperator.best:
-              return api.Operator.BEST;
-            case LeaderboardOperator.decrement:
-              return api.Operator.DECREMENT;
-            case LeaderboardOperator.increment:
-              return api.Operator.INCREMENT;
-            case LeaderboardOperator.noOverride:
-              return api.Operator.NO_OVERRIDE;
-            case LeaderboardOperator.set:
-              return api.Operator.SET;
-            default:
-              return null;
-          }
-        }(),
-        score: score != null ? Int64(score) : null,
-        subscore: subscore != null ? Int64(subscore) : null,
+    final res = await _client.writeTournamentRecord(
+      api.WriteTournamentRecordRequest(
+        tournamentId: tournamentId,
+        record: api.WriteTournamentRecordRequest_TournamentRecordWrite(
+          metadata: metadata,
+          operator: () {
+            switch (operator) {
+              case LeaderboardOperator.best:
+                return api.Operator.BEST;
+              case LeaderboardOperator.decrement:
+                return api.Operator.DECREMENT;
+              case LeaderboardOperator.increment:
+                return api.Operator.INCREMENT;
+              case LeaderboardOperator.noOverride:
+                return api.Operator.NO_OVERRIDE;
+              case LeaderboardOperator.set:
+                return api.Operator.SET;
+              default:
+                return null;
+            }
+          }(),
+          score: score != null ? Int64(score) : null,
+          subscore: subscore != null ? Int64(subscore) : null,
+        ),
       ),
-    ));
+      options: _getSessionCallOptions(session),
+    );
 
     return model.LeaderboardRecord.fromDto(res);
+  }
+
+  @override
+  Future<void> rpc({
+    required model.Session session,
+    required String id,
+    String? payload,
+  }) async {
+    await _client.rpcFunc(
+      api.Rpc(
+        id: id,
+        payload: payload,
+      ),
+      options: _getSessionCallOptions(session),
+    );
   }
 }
