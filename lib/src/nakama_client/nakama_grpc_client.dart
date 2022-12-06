@@ -131,7 +131,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
   Future<model.Session> authenticateEmail({
     required String email,
     required String password,
-    bool create = true,
+    bool create = false,
     String? username,
     Map<String, String>? vars,
   }) async {
@@ -188,7 +188,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
   @override
   Future<model.Session> authenticateDevice({
     required String deviceId,
-    bool create = true,
+    bool create = false,
     String? username,
     Map<String, String>? vars,
   }) async {
@@ -243,7 +243,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
   @override
   Future<model.Session> authenticateFacebook({
     required String token,
-    bool create = true,
+    bool create = false,
     String? username,
     Map<String, String>? vars,
     bool import = false,
@@ -300,7 +300,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
   @override
   Future<model.Session> authenticateApple({
     required String token,
-    bool create = true,
+    bool create = false,
     String? username,
     Map<String, String>? vars,
   }) async {
@@ -352,7 +352,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
   @override
   Future<model.Session> authenticateFacebookInstantGame({
     required String signedPlayerInfo,
-    bool create = true,
+    bool create = false,
     String? username,
     Map<String, String>? vars,
   }) async {
@@ -404,7 +404,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
   @override
   Future<model.Session> authenticateGoogle({
     required String token,
-    bool create = true,
+    bool create = false,
     String? username,
     Map<String, String>? vars,
   }) async {
@@ -461,7 +461,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
     required String salt,
     required String signature,
     required String publicKeyUrl,
-    bool create = true,
+    bool create = false,
     String? username,
     Map<String, String>? vars,
   }) async {
@@ -538,7 +538,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
   @override
   Future<model.Session> authenticateSteam({
     required String token,
-    bool create = true,
+    bool create = false,
     String? username,
     Map<String, String>? vars,
     bool import = false,
@@ -598,7 +598,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
   @override
   Future<model.Session> authenticateCustom({
     required String id,
-    bool create = true,
+    bool create = false,
     String? username,
     Map<String, String>? vars,
   }) async {
@@ -933,7 +933,9 @@ class NakamaGrpcClient extends NakamaBaseClient {
       api.ListFriendsRequest(
         cursor: cursor,
         limit: api.Int32Value(value: limit),
-        state: api.Int32Value(value: friendshipState?.index),
+        state: friendshipState == null
+            ? null
+            : api.Int32Value(value: friendshipState?.index),
       ),
       options: _getSessionCallOptions(session),
     );
@@ -1073,7 +1075,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
       api.ListUserGroupsRequest(
         cursor: cursor,
         limit: api.Int32Value(value: limit),
-        state: api.Int32Value(value: state?.index),
+        state: state == null ? null : api.Int32Value(value: state?.index),
         userId: userId,
       ),
       options: _getSessionCallOptions(session),
@@ -1095,7 +1097,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
         groupId: groupId,
         cursor: cursor,
         limit: api.Int32Value(value: limit),
-        state: api.Int32Value(value: state?.index),
+        state: state == null ? null : api.Int32Value(value: state?.index),
       ),
       options: _getSessionCallOptions(session),
     );
