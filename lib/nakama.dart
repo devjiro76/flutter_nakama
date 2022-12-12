@@ -2,6 +2,20 @@ library nakama;
 
 export 'package:fixnum/fixnum.dart' show Int64;
 
+// Google protobuf
+export './src/api/api.dart'
+    show
+        Timestamp,
+        Empty,
+        StringValue,
+        BoolValue,
+        Int32Value,
+        Int64Value,
+        UInt32Value,
+        UInt64Value,
+        FloatValue,
+        DoubleValue,
+        BytesValue;
 // Enums
 export './src/enum/channel_join_type.dart';
 export './src/enum/friendship_state.dart';
@@ -18,6 +32,7 @@ export './src/nakama_client/stub/nakama_client_stub.dart'
 export './src/nakama_websocket_client.dart';
 // Public models
 export 'src/models/account.dart';
+export 'src/models/channel_message.dart';
 export 'src/models/chat.dart';
 export 'src/models/friends.dart';
 export 'src/models/group.dart';
